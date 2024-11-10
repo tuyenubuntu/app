@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+    <script>
+        // Kết nối tới Socket.IO server
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        // Gửi tin nhắn khi người dùng nhấn Enter
+        function sendMessage() {
+            var message = document.getElementById("messageInput").value;
+            socket.send(message);  // Gửi tin nhắn tới server
+            document.getElementById("messageInput").value = '';  // Làm trống ô nhập
+        }
+
+        // Lắng nghe sự kiện 'message' từ server
+        socket.on('message', function(msg) {
+            var chatWindow = document.getElementById("chatWindow");
+            var newMessage = document.createElement("div");
+            newMessage.textContent = msg;
+            chatWindow.appendChild(newMessage);
+        });
+    </script>
+</head>
+<body>
+    <h1>Ứng dụng Chat Real-time</h1>
+    <div id="chatWindow" style="border: 1px solid #ccc; height: 300px; overflow-y: scroll; padding: 10px;">
+        <!-- Tin nhắn sẽ hiển thị ở đây -->
+    </div>
+    <input type="text" id="messageInput" placeholder="Nhập tin nhắn..." onkeydown="if(event.key === 'Enter'){ sendMessage(); }">
+    <button onclick="sendMessage()">Gửi</button>
+</body>
+</html>
